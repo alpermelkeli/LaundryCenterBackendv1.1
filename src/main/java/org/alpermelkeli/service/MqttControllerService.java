@@ -23,7 +23,7 @@ public class MqttControllerService {
     private CompanyService companyService;
 
     private static final String mqttBrokerAddress = ConfigUtil.getProperty("BROKER_ADDRESS");
-    private static final String clientId = "SpringBootClient1";
+    private static final String clientId = "SpringBootClient2";
     private MqttClient mqttClient;
     private final Timer reconnectTimer = new Timer(true);
 

@@ -1,27 +1,36 @@
 package org.alpermelkeli.model;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.List;
+import java.util.Set;
+
 @Document(collection = "users")
-public class User {
+public class UserEntity {
     @Id
     private String id;
     private String email;
     private String password;
-    private String name;
-    private String surname;
-    private String role;
 
-    public User() {
+    @DBRef
+    private List<Role> roles;
+
+    public UserEntity() {
     }
 
-    public User(String email, String password, String name, String surname, String role) {
+    public UserEntity(String email, String password) {
         this.email = email;
         this.password = password;
-        this.name = name;
-        this.surname = surname;
-        this.role = role;
+    }
+
+    public List<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<Role> roles) {
+        this.roles = roles;
     }
 
     public String getId() {
@@ -46,29 +55,5 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getSurname() {
-        return surname;
-    }
-
-    public void setSurname(String surname) {
-        this.surname = surname;
-    }
-
-    public String getRole() {
-        return role;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
     }
 }
