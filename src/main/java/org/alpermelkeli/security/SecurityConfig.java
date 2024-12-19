@@ -42,27 +42,6 @@ public class SecurityConfig {
         return http.build();
     }
 
-    /**
-     * Configures an in-memory user details service with predefined users. For testing.
-     *
-     * @return the UserDetailsService
-     */
-    @Bean
-    public UserDetailsService users(){
-        UserDetails admin = User.builder()
-                .username("admin")
-                .password("password")
-                .roles("ADMIN")
-                .build();
-        UserDetails user = User.builder()
-                .username("user")
-                .password("password")
-                .roles("USER")
-                .build();
-
-        return new InMemoryUserDetailsManager(admin, user);
-    }
-
     @Bean
     public AuthenticationManager authenticationManager(
             AuthenticationConfiguration authenticationConfiguration) throws Exception {
