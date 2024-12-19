@@ -9,13 +9,12 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
@@ -23,21 +22,31 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @EnableWebSecurity
 public class SecurityConfig {
     @Autowired
-    private CustomUserDetailsService customUserDetailsService;
+    private JWTAuthEntryPoint authEntryPoint;
 
+    @Autowired
+    private CustomUserDetailsService customUserDetailsService;
 
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
         http
-                .csrf(csrf -> csrf.disable())
-                .authorizeHttpRequests(authorize ->
+                .csrf(AbstractHttpConfigurer::disable)
+                .exceptionHandling(
+                        exceptionHandling ->
+                        exceptionHandling.authenticationEntryPoint(authEntryPoint))
+                .sessionManagement(
+                        sessionManagement ->
+                        sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(
+                        authorize ->
                         authorize
                                 .requestMatchers("v1/api/auth/**").permitAll() /* Authentication requests are allowed without authentication */
                                 .requestMatchers(HttpMethod.POST).authenticated() /* POST requests are allowed only with authentication */
                                 .anyRequest().authenticated()
                 )
                 .httpBasic(withDefaults());
+        http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
@@ -51,5 +60,9 @@ public class SecurityConfig {
     @Bean
     PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
+    }
+    @Bean
+    public JWTAuthenticationFilter jwtAuthenticationFilter() {
+        return new JWTAuthenticationFilter();
     }
 }

@@ -2,6 +2,8 @@ package org.alpermelkeli.dto;
 
 import lombok.Data;
 
+/*To handle login request body*/
+
 @Data
 public class LoginDto {
     private String email;

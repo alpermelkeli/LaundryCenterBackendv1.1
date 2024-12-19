@@ -80,6 +80,7 @@ public class CompanyService {
     public interface OnTimeUpdatedCallback{
         void onTimeUpdated(long currentTimeMillis, long durationTime);
     }
+
     public void updateDeviceStatus(String deviceId, boolean status){
         List<Company> companies = companyRepository.findAll();
         for (Company company : companies) {

@@ -1,8 +1,8 @@
 package org.alpermelkeli.dto;
 
 import lombok.Data;
-import lombok.Getter;
 
+/*To handle register request body*/
 @Data
 public class RegisterDto {
     private String email;
