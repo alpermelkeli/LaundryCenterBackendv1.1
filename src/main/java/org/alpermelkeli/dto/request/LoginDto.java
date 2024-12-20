@@ -1,10 +1,11 @@
-package org.alpermelkeli.dto;
+package org.alpermelkeli.dto.request;
 
 import lombok.Data;
 
-/*To handle register request body*/
+/*To handle login request body*/
+
 @Data
-public class RegisterDto {
+public class LoginDto {
     private String email;
     private String password;
 

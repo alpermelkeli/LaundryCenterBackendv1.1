@@ -1,10 +1,14 @@
 package org.alpermelkeli.controller;
 
-import org.alpermelkeli.dto.AuthResponseDto;
-import org.alpermelkeli.dto.LoginDto;
-import org.alpermelkeli.dto.RegisterDto;
+import org.alpermelkeli.dto.request.TokenRefreshRequestDto;
+import org.alpermelkeli.dto.response.AuthResponseDto;
+import org.alpermelkeli.dto.request.LoginDto;
+import org.alpermelkeli.dto.request.RegisterDto;
+import org.alpermelkeli.dto.response.RefreshTokenResponseDto;
+import org.alpermelkeli.model.RefreshToken;
 import org.alpermelkeli.model.Role;
 import org.alpermelkeli.model.UserEntity;
+import org.alpermelkeli.repository.RefreshTokenRepository;
 import org.alpermelkeli.repository.RoleRepository;
 import org.alpermelkeli.repository.UserRepository;
 import org.alpermelkeli.security.JWTGenerator;
@@ -21,7 +25,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Collection;
 import java.util.Collections;
 
 @RestController
@@ -37,6 +40,8 @@ public class AuthController {
     private PasswordEncoder passwordEncoder;
     @Autowired
     private JWTGenerator jwtGenerator;
+    @Autowired
+    private RefreshTokenRepository refreshTokenRepository;
 
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody RegisterDto registerDto) {
@@ -59,7 +64,7 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<AuthResponseDto> login(@RequestBody LoginDto loginDto) {
         if(!userRepository.existsByEmail(loginDto.getEmail())) {
-            return new ResponseEntity<>(new AuthResponseDto(null), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(new AuthResponseDto(null, null), HttpStatus.NOT_FOUND);
         }
 
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginDto.getEmail(), loginDto.getPassword()));
@@ -68,6 +73,36 @@ public class AuthController {
 
         String token = jwtGenerator.generateToken(authentication);
 
-        return new ResponseEntity<>(new AuthResponseDto(token), HttpStatus.OK);
+        String refreshToken = jwtGenerator.generateRefreshToken(authentication);
+
+        UserEntity user = userRepository.findByEmail(loginDto.getEmail()).get();
+
+        RefreshToken refreshToken1 = new RefreshToken(refreshToken, user);
+
+        refreshTokenRepository.save(refreshToken1);
+
+        return new ResponseEntity<>(new AuthResponseDto(token, refreshToken), HttpStatus.OK);
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<RefreshTokenResponseDto> refresh(@RequestBody TokenRefreshRequestDto tokenRefreshRequestDto) {
+        // Check if the refresh token exists in the database
+        if(refreshTokenRepository.existsByRefreshToken(tokenRefreshRequestDto.getRefreshToken())){
+
+            UserEntity user = refreshTokenRepository.findByRefreshToken(tokenRefreshRequestDto.getRefreshToken()).getUser();
+
+            Authentication authentication = new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword());
+
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+
+            // Check if the refresh token is valid
+            if(jwtGenerator.validateRefreshToken(tokenRefreshRequestDto.getRefreshToken())) {
+                return new ResponseEntity<>(new
+                        RefreshTokenResponseDto
+                        (jwtGenerator.generateToken(authentication)),
+                        HttpStatus.OK);
+            }
+        }
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 }

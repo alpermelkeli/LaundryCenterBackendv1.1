@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -31,7 +30,7 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
 
         try {
             String token = getJwtFromRequest(request);
-            if (StringUtils.hasText(token) && jwtGenerator.validateToken(token)) {
+            if (StringUtils.hasText(token) && jwtGenerator.validateJwtToken(token)) {
                 String email = jwtGenerator.getEmailFromToken(token);
                 UserDetails userDetails = customUserDetailsService.loadUserByUsername(email);
                 if (userDetails != null) {

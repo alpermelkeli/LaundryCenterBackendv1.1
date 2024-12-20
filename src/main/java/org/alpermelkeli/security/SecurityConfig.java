@@ -42,6 +42,7 @@ public class SecurityConfig {
                         authorize ->
                         authorize
                                 .requestMatchers("v1/api/auth/**").permitAll() /* Authentication requests are allowed without authentication */
+                                .requestMatchers("v1/api/companies/getTime").permitAll() /* Time requests are allowed without authentication */
                                 .requestMatchers(HttpMethod.POST).authenticated() /* POST requests are allowed only with authentication */
                                 .anyRequest().authenticated()
                 )
