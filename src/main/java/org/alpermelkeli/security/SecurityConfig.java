@@ -1,6 +1,7 @@
 package org.alpermelkeli.security;
 
 
+import org.alpermelkeli.security.rate_limit.LoginRateLimitFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -30,6 +31,7 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
+        http.addFilterBefore(loginRateLimitFilter(), UsernamePasswordAuthenticationFilter.class);
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .exceptionHandling(
@@ -48,7 +50,6 @@ public class SecurityConfig {
                 )
                 .httpBasic(withDefaults());
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
-
         return http.build();
     }
 
@@ -65,5 +66,9 @@ public class SecurityConfig {
     @Bean
     public JWTAuthenticationFilter jwtAuthenticationFilter() {
         return new JWTAuthenticationFilter();
+    }
+    @Bean
+    public LoginRateLimitFilter loginRateLimitFilter() {
+        return new LoginRateLimitFilter();
     }
 }

@@ -5,7 +5,7 @@ import org.alpermelkeli.dto.response.AuthResponseDto;
 import org.alpermelkeli.dto.request.LoginDto;
 import org.alpermelkeli.dto.request.RegisterDto;
 import org.alpermelkeli.dto.response.RefreshTokenResponseDto;
-import org.alpermelkeli.model.RefreshToken;
+import org.alpermelkeli.model.RefreshTokenEntity;
 import org.alpermelkeli.model.Role;
 import org.alpermelkeli.model.UserEntity;
 import org.alpermelkeli.repository.RefreshTokenRepository;
@@ -61,6 +61,7 @@ public class AuthController {
         userRepository.save(user);
         return new ResponseEntity<>("User registered successfully", HttpStatus.OK);
     }
+
     @PostMapping("/login")
     public ResponseEntity<AuthResponseDto> login(@RequestBody LoginDto loginDto) {
         if(!userRepository.existsByEmail(loginDto.getEmail())) {
@@ -77,9 +78,13 @@ public class AuthController {
 
         UserEntity user = userRepository.findByEmail(loginDto.getEmail()).get();
 
-        RefreshToken refreshToken1 = new RefreshToken(refreshToken, user);
+        RefreshTokenEntity refreshTokenEntity = new RefreshTokenEntity();
 
-        refreshTokenRepository.save(refreshToken1);
+        refreshTokenEntity.setRefreshToken(refreshToken);
+
+        refreshTokenEntity.setUser(user);
+
+        refreshTokenRepository.save(refreshTokenEntity);
 
         return new ResponseEntity<>(new AuthResponseDto(token, refreshToken), HttpStatus.OK);
     }
