@@ -12,6 +12,7 @@ public class UserEntity {
     private String id;
     private String email;
     private String password;
+    private Double balance;
 
     @DBRef
     private List<RoleEntity> roleEntities;
@@ -54,5 +55,13 @@ public class UserEntity {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public Double getBalance() {
+        return balance;
+    }
+
+    public void setBalance(Double balance) {
+        this.balance = balance;
     }
 }

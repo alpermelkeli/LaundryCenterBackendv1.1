@@ -31,7 +31,6 @@ public class LoginRateLimitFilter extends OncePerRequestFilter {
 
         if (!request.getServletPath().equals("/v1/api/auth/login")) {
             filterChain.doFilter(request, response);
-            System.out.println("Request Path: " + request.getServletPath());
             return;
         }
 
