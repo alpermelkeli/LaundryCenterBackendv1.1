@@ -6,12 +6,12 @@ import org.alpermelkeli.dto.request.LoginDto;
 import org.alpermelkeli.dto.request.RegisterDto;
 import org.alpermelkeli.dto.response.RefreshTokenResponseDto;
 import org.alpermelkeli.model.RefreshTokenEntity;
-import org.alpermelkeli.model.Role;
+import org.alpermelkeli.model.RoleEntity;
 import org.alpermelkeli.model.UserEntity;
 import org.alpermelkeli.repository.RefreshTokenRepository;
 import org.alpermelkeli.repository.RoleRepository;
 import org.alpermelkeli.repository.UserRepository;
-import org.alpermelkeli.security.JWTGenerator;
+import org.alpermelkeli.security.jwt.JWTGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -54,9 +54,9 @@ public class AuthController {
 
         user.setPassword(passwordEncoder.encode(registerDto.getPassword()));
 
-        Role role = roleRepository.findByName("USER").get();
+        RoleEntity roleEntity = roleRepository.findByName("USER").get();
 
-        user.setRoles(Collections.singletonList(role));
+        user.setRoles(Collections.singletonList(roleEntity));
 
         userRepository.save(user);
         return new ResponseEntity<>("User registered successfully", HttpStatus.OK);
@@ -74,19 +74,15 @@ public class AuthController {
 
         String token = jwtGenerator.generateToken(authentication);
 
-        String refreshToken = jwtGenerator.generateRefreshToken(authentication);
+        RefreshTokenEntity refreshTokenEntity = jwtGenerator.generateRefreshToken(authentication);
 
         UserEntity user = userRepository.findByEmail(loginDto.getEmail()).get();
-
-        RefreshTokenEntity refreshTokenEntity = new RefreshTokenEntity();
-
-        refreshTokenEntity.setRefreshToken(refreshToken);
 
         refreshTokenEntity.setUser(user);
 
         refreshTokenRepository.save(refreshTokenEntity);
 
-        return new ResponseEntity<>(new AuthResponseDto(token, refreshToken), HttpStatus.OK);
+        return new ResponseEntity<>(new AuthResponseDto(token, refreshTokenEntity.getRefreshToken()), HttpStatus.OK);
     }
 
     @PostMapping("/refresh")

@@ -5,7 +5,6 @@ import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.List;
-import java.util.Set;
 
 @Document(collection = "users")
 public class UserEntity {
@@ -15,7 +14,7 @@ public class UserEntity {
     private String password;
 
     @DBRef
-    private List<Role> roles;
+    private List<RoleEntity> roleEntities;
 
     public UserEntity() {
     }
@@ -25,12 +24,12 @@ public class UserEntity {
         this.password = password;
     }
 
-    public List<Role> getRoles() {
-        return roles;
+    public List<RoleEntity> getRoles() {
+        return roleEntities;
     }
 
-    public void setRoles(List<Role> roles) {
-        this.roles = roles;
+    public void setRoles(List<RoleEntity> roleEntities) {
+        this.roleEntities = roleEntities;
     }
 
     public String getId() {

@@ -8,6 +8,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.alpermelkeli.security.SecurityConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
@@ -63,7 +64,7 @@ public class LoginRateLimitFilter extends OncePerRequestFilter {
 
     private Bucket createNewBucket() {
         // Rate limit rules: 5 try / 15 minutes
-        Bandwidth limit = Bandwidth.classic(5, Refill.intervally(5, Duration.ofMinutes(15)));
+        Bandwidth limit = Bandwidth.classic(5, Refill.intervally(SecurityConstants.rateLimitToken, Duration.ofMinutes(SecurityConstants.rateLimitDuration)));
         return Bucket4j.builder().addLimit(limit).build();
     }
 

@@ -1,6 +1,6 @@
 package org.alpermelkeli.controller;
 
-import org.alpermelkeli.model.Company;
+import org.alpermelkeli.model.CompanyEntity;
 import org.alpermelkeli.service.CompanyService;
 import org.alpermelkeli.service.MachineTimeController;
 import org.alpermelkeli.service.MqttControllerService;
@@ -20,7 +20,7 @@ public class CompanyController {
     private MachineTimeController machineTimeController;
 
     @GetMapping("/getCompanies")
-    public List<Company> getAllCompanies() {
+    public List<CompanyEntity> getAllCompanies() {
         return companyService.getCompanies();
     }
 
@@ -29,11 +29,11 @@ public class CompanyController {
         return companyService.getCompanyPrice(companyId);
     }
     @GetMapping("/getDevices")
-    public List<Company.Device> getDevices(@RequestParam String companyId) {
+    public List<CompanyEntity.Device> getDevices(@RequestParam String companyId) {
         return companyService.findDevicesByCompanyId(companyId);
     }
     @GetMapping("/getMachine")
-    public Company.Device.Machine getMachine(@RequestParam String companyId, @RequestParam String deviceId, @RequestParam String machineId) {
+    public CompanyEntity.Device.Machine getMachine(@RequestParam String companyId, @RequestParam String deviceId, @RequestParam String machineId) {
         return companyService.getMachine(companyId, deviceId, machineId);
     }
     @PostMapping("/increaseMachineTime")

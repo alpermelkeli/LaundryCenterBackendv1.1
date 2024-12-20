@@ -1,7 +1,6 @@
 package org.alpermelkeli.service;
 
 
-import org.alpermelkeli.model.Company;
 import org.alpermelkeli.utils.ConfigUtil;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;

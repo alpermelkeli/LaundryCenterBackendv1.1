@@ -1,6 +1,6 @@
 package org.alpermelkeli.security;
 
-import org.alpermelkeli.model.Role;
+import org.alpermelkeli.model.RoleEntity;
 import org.alpermelkeli.model.UserEntity;
 import org.alpermelkeli.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +29,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     }
 
 
-    private Collection<GrantedAuthority> mapRolesToAuthorities(List<Role> roles) {
-        return roles.stream().map(role -> new SimpleGrantedAuthority(role.getName())).collect(Collectors.toList());
+    private Collection<GrantedAuthority> mapRolesToAuthorities(List<RoleEntity> roleEntities) {
+        return roleEntities.stream().map(roleEntity -> new SimpleGrantedAuthority(roleEntity.getName())).collect(Collectors.toList());
     }
 }

@@ -4,12 +4,12 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "roles")
-public class Role {
+public class RoleEntity {
     @Id
     private String id;
     private String name;
 
-    public Role(String id, String name) {
+    public RoleEntity(String id, String name) {
         this.id = id;
         this.name = name;
     }

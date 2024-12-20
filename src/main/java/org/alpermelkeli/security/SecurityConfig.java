@@ -1,6 +1,8 @@
 package org.alpermelkeli.security;
 
 
+import org.alpermelkeli.security.jwt.JWTAuthEntryPoint;
+import org.alpermelkeli.security.jwt.JWTAuthenticationFilter;
 import org.alpermelkeli.security.rate_limit.LoginRateLimitFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;

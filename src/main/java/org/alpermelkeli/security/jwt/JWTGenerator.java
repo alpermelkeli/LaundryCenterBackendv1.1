@@ -1,13 +1,14 @@
-package org.alpermelkeli.security;
+package org.alpermelkeli.security.jwt;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import org.alpermelkeli.repository.RefreshTokenRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.alpermelkeli.model.RefreshTokenEntity;
+import org.alpermelkeli.security.SecurityConstants;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
+import java.sql.Ref;
 import java.util.Date;
 import java.util.UUID;
 
@@ -30,7 +31,8 @@ public class JWTGenerator {
 
     }
 
-    public String generateRefreshToken(Authentication authentication) {
+    public RefreshTokenEntity generateRefreshToken(Authentication authentication) {
+        RefreshTokenEntity refreshTokenEntity = new RefreshTokenEntity();
         String email = authentication.getName(); // Get the email of the authenticated user
         Date currentDate = new Date();
         Date expirationDate = new Date(currentDate.getTime() + SecurityConstants.JWTRefreshExpiration);
@@ -43,7 +45,11 @@ public class JWTGenerator {
                 .signWith(SignatureAlgorithm.HS512, SecurityConstants.refreshTokenSecret)
                 .compact();
 
-        return refreshToken;
+        refreshTokenEntity.setRefreshToken(refreshToken);
+
+        refreshTokenEntity.setExpirationDate(expirationDate);
+
+        return refreshTokenEntity;
     }
 
     public String getEmailFromToken(String token) {

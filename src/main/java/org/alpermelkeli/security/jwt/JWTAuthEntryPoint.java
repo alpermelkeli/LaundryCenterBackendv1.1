@@ -1,4 +1,4 @@
-package org.alpermelkeli.security;
+package org.alpermelkeli.security.jwt;
 
 
 import jakarta.servlet.ServletException;

@@ -1,6 +1,6 @@
 package org.alpermelkeli.service;
 
-import org.alpermelkeli.model.Company;
+import org.alpermelkeli.model.CompanyEntity;
 import org.alpermelkeli.repository.CompanyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,37 +14,37 @@ public class CompanyService {
     private CompanyRepository companyRepository;
 
 
-    public List<Company.Device> findDevicesByCompanyId(String companyId) {
-        Optional<Company> companyOpt = companyRepository.findById(companyId);
+    public List<CompanyEntity.Device> findDevicesByCompanyId(String companyId) {
+        Optional<CompanyEntity> companyOpt = companyRepository.findById(companyId);
         if (companyOpt.isPresent()) {
-            Company company = companyOpt.get();
-            return company.getDevices();
+            CompanyEntity companyEntity = companyOpt.get();
+            return companyEntity.getDevices();
         }
         return null;
     }
 
-    public List<Company> getCompanies() {
+    public List<CompanyEntity> getCompanies() {
         return companyRepository.findAll();
     }
 
     public double getCompanyPrice(String companyId) {
-        Optional<Company> companyOpt = companyRepository.findById(companyId);
+        Optional<CompanyEntity> companyOpt = companyRepository.findById(companyId);
         if (companyOpt.isPresent()) {
-            Company company = companyOpt.get();
-            return company.getPrice();
+            CompanyEntity companyEntity = companyOpt.get();
+            return companyEntity.getPrice();
         }
         return 0;
     }
 
-    public Company.Device.Machine getMachine(String companyId, String deviceId, String machineId){
-        Optional<Company> companyOpt = companyRepository.findById(companyId);
+    public CompanyEntity.Device.Machine getMachine(String companyId, String deviceId, String machineId){
+        Optional<CompanyEntity> companyOpt = companyRepository.findById(companyId);
         if (companyOpt.isPresent()) {
-            Company company = companyOpt.get();
-            List<Company.Device> devices = company.getDevices();
-            for (Company.Device device : devices) {
+            CompanyEntity companyEntity = companyOpt.get();
+            List<CompanyEntity.Device> devices = companyEntity.getDevices();
+            for (CompanyEntity.Device device : devices) {
                 if (device.getId().equals(deviceId)) {
-                    List<Company.Device.Machine> machines = device.getMachines();
-                    for (Company.Device.Machine machine : machines) {
+                    List<CompanyEntity.Device.Machine> machines = device.getMachines();
+                    for (CompanyEntity.Device.Machine machine : machines) {
                         if (machine.getId().equals(machineId)) {
                             return machine;
                         }
@@ -56,19 +56,19 @@ public class CompanyService {
     }
 
     public void increaseMachineTime(String companyId, String deviceId, String machineId, long time, OnTimeUpdatedCallback callback){
-        Optional<Company> companyOpt = companyRepository.findById(companyId);
+        Optional<CompanyEntity> companyOpt = companyRepository.findById(companyId);
         if (companyOpt.isPresent()) {
-            Company company = companyOpt.get();
-            List<Company.Device> devices = company.getDevices();
-            for (Company.Device device : devices) {
+            CompanyEntity companyEntity = companyOpt.get();
+            List<CompanyEntity.Device> devices = companyEntity.getDevices();
+            for (CompanyEntity.Device device : devices) {
                 if (device.getId().equals(deviceId)) {
-                    List<Company.Device.Machine> machines = device.getMachines();
-                    for (Company.Device.Machine machine : machines) {
+                    List<CompanyEntity.Device.Machine> machines = device.getMachines();
+                    for (CompanyEntity.Device.Machine machine : machines) {
                         if (machine.getId().equals(machineId)) {
                             long newDuration = machine.getDuration() + time;
                             long currentTime = machine.getStartTime();
                             machine.setDuration(newDuration);
-                            companyRepository.save(company);
+                            companyRepository.save(companyEntity);
                             callback.onTimeUpdated(currentTime, newDuration);
                         }
                     }
@@ -82,30 +82,30 @@ public class CompanyService {
     }
 
     public void updateDeviceStatus(String deviceId, boolean status){
-        List<Company> companies = companyRepository.findAll();
-        for (Company company : companies) {
-            List<Company.Device> devices = company.getDevices();
-            for (Company.Device device : devices) {
+        List<CompanyEntity> companies = companyRepository.findAll();
+        for (CompanyEntity companyEntity : companies) {
+            List<CompanyEntity.Device> devices = companyEntity.getDevices();
+            for (CompanyEntity.Device device : devices) {
                 if (device.getId().equals(deviceId)) {
                     device.setStatus(status ? "connected" : "disconnected");
-                    companyRepository.save(company);
+                    companyRepository.save(companyEntity);
                 }
             }
         }
     }
 
     public void updateMachineStatus(String companyId, String deviceId, String machineId, boolean status){
-        Optional<Company> companyOpt = companyRepository.findById(companyId);
+        Optional<CompanyEntity> companyOpt = companyRepository.findById(companyId);
         if (companyOpt.isPresent()) {
-            Company company = companyOpt.get();
-            List<Company.Device> devices = company.getDevices();
-            for (Company.Device device : devices) {
+            CompanyEntity companyEntity = companyOpt.get();
+            List<CompanyEntity.Device> devices = companyEntity.getDevices();
+            for (CompanyEntity.Device device : devices) {
                 if (device.getId().equals(deviceId)) {
-                    List<Company.Device.Machine> machines = device.getMachines();
-                    for (Company.Device.Machine machine : machines) {
+                    List<CompanyEntity.Device.Machine> machines = device.getMachines();
+                    for (CompanyEntity.Device.Machine machine : machines) {
                         if (machine.getId().equals(machineId)) {
                             machine.setActive(status);
-                            companyRepository.save(company);
+                            companyRepository.save(companyEntity);
                         }
                     }
                 }
@@ -114,18 +114,18 @@ public class CompanyService {
     }
 
     public void updateMachineTime(String companyId , String deviceId, String machineId, long currentTimeMillis, long time){
-        Optional<Company> companyOpt = companyRepository.findById(companyId);
+        Optional<CompanyEntity> companyOpt = companyRepository.findById(companyId);
         if (companyOpt.isPresent()) {
-            Company company = companyOpt.get();
-            List<Company.Device> devices = company.getDevices();
-            for (Company.Device device : devices) {
+            CompanyEntity companyEntity = companyOpt.get();
+            List<CompanyEntity.Device> devices = companyEntity.getDevices();
+            for (CompanyEntity.Device device : devices) {
                 if (device.getId().equals(deviceId)) {
-                    List<Company.Device.Machine> machines = device.getMachines();
-                    for (Company.Device.Machine machine : machines) {
+                    List<CompanyEntity.Device.Machine> machines = device.getMachines();
+                    for (CompanyEntity.Device.Machine machine : machines) {
                         if (machine.getId().equals(machineId)) {
                             machine.setStartTime(currentTimeMillis);
                             machine.setDuration(time);
-                            companyRepository.save(company);
+                            companyRepository.save(companyEntity);
                         }
                     }
                 }
