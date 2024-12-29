@@ -11,6 +11,7 @@
     <properties>
         <java.version>17</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <start-class>org.alpermelkeli.LaundryCenterApiApplication</start-class>
     </properties>
 
     <dependencies>
@@ -99,27 +100,6 @@
 
     <build>
         <plugins>
-            <!-- Maven War Plugin -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-war-plugin</artifactId>
-                <version>3.3.2</version>
-                <configuration>
-                    <failOnMissingWebXml>false</failOnMissingWebXml>
-                    <!-- Tüm bağımlılıkları ekle -->
-                    <archive>
-                        <manifest>
-                            <addClasspath>true</addClasspath>
-                            <classpathPrefix>WEB-INF/lib/</classpathPrefix>
-                        </manifest>
-                        <manifestEntries>
-                            <Main-Class>org.alpermelkeli.LaundryCenterApiApplication</Main-Class>
-                        </manifestEntries>
-                    </archive>
-                    <packagingExcludes>WEB-INF/lib-provided/*.jar</packagingExcludes>
-                </configuration>
-            </plugin>
-
             <!-- Spring Boot Maven Plugin -->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
@@ -127,11 +107,20 @@
                 <version>3.1.4</version>
                 <configuration>
                     <addResources>true</addResources>
+                    <mainClass>org.alpermelkeli.LaundryCenterApiApplication</mainClass>
+                    <layout>JAR</layout>
                 </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
 
 
-    <packaging>war</packaging>
+
 </project>
